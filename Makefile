@@ -8,6 +8,7 @@ OBJSIZE = arm-none-eabi-size
 INCLUDES = -Idrivers -Ibaremetal
 VPATH = src:drivers:baremetal
 SYS_CLOCK = 48000000L
+-include config.make
 
 LINKSCRIPT=baremetal/mkl25z4.ld 
 
@@ -27,7 +28,17 @@ CFLAGSS = -ffreestanding -nodefaultlibs -nostartfiles \
 # -----------------------------------------------------------------------------
 
 usage: 
-	@echo LIBS=\"list of drivers\" make file.srec
+	@echo To build an application:
+	@echo "     "LIBS=\"list of drivers\" make file.srec
+	@echo ""
+
+
+program: $(SREC)
+	-sudo umount /mnt
+	sudo mount $(DRIVE) /mnt
+	sudo cp $(SREC) /mnt
+	sudo umount /mnt
+
 
 clean:
 	-rm -f *.o *.out *.srec *.dump
