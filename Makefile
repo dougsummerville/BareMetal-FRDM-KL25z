@@ -40,7 +40,7 @@ erase:
 	openocd  -f interface/cmsis-dap.cfg -f target/kl25.cfg -c "init" -c "kinetis mdm mass_erase" -c "exit"
 
 clean:
-	-rm -f *.o *.elf *.srec *.dump
+	-rm -f *.o *.elf *.srec  *.dump
 
 _startup.o: _startup.c
 	$(CC) $(CFLAGSS) -c $< -o $@
