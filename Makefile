@@ -28,35 +28,34 @@ CFLAGSS = -ffreestanding -nodefaultlibs -nostartfiles \
 # -----------------------------------------------------------------------------
 
 usage: 
-	@echo To build an application:
-	@echo "     "LIBS=\"list of drivers\" make file.srec
-	@echo ""
+	$info( To build an application:)
+	#@echo "     "LIBS=\"list of drivers\" make file.srec
+	#@echo ""
 
 
-program: $(SREC)
-	-sudo umount /mnt
-	sudo mount $(DRIVE) /mnt
-	sudo cp $(SREC) /mnt
-	sudo umount /mnt
+all: $(SREC)
+	cp $< /media/$(USER)/DAPLINK/
 
+erase:
+	openocd  -f interface/cmsis-dap.cfg -f target/kl25.cfg -c "init" -c "kinetis mdm mass_erase" -c "exit"
 
 clean:
-	-rm -f *.o *.out *.srec *.dump
+	-rm -f *.o *.elf *.srec *.dump
 
 _startup.o: _startup.c
 	$(CC) $(CFLAGSS) -c $< -o $@
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.dump: %.out
+%.dump: %.elf
 	$(OBJDUMP) --disassemble $< >$@
 
-%.srec: %.out
+%.srec: %.elf
 	$(OBJCOPY) -O srec $< $@
 
 #_startup.o must be first in link order- else LTO removes IRQ Handlers
-%.out: _startup.o %.o $(LIBS)
+%.elf: _startup.o %.o $(LIBS)
 	$(CC) $(CFLAGS) -T $(LINKSCRIPT) -o $@ $^
-	@echo Generated Program has the following segment sizes:
+	#@echo Generated Program has the following segment sizes:
 	@$(OBJSIZE) $@
 
