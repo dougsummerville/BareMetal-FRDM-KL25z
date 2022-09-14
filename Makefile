@@ -22,21 +22,37 @@ CFLAGSS = -ffreestanding -nodefaultlibs -nostartfiles \
 	 -ffunction-sections -fdata-sections -Wall \
 	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
 	 $(OPTS) $(INCLUDES)
+NUM_ELFS := $(shell  ls -dq *.elf 2>/dev/null | wc -l)
 
-.PHONY:	clean usage
+.PHONY:	clean usage board_plugged_in program
 
 # -----------------------------------------------------------------------------
 
 usage: 
-	$info( To build an application:)
-	#@echo "     "LIBS=\"list of drivers\" make file.srec
-	#@echo ""
+	@clear
+	@cat USAGE.txt
 
+board_plugged_in:
+ifeq ("$(wildcard /media/*/DAPLINK)","")
+	$(error DAPLINK not found.  Is the board plugged in?)
+else
+	@echo DAPLINK found
+endif
 
-all: $(SREC)
-	cp $< /media/$(USER)/DAPLINK/
+program: board_plugged_in
+ifeq ($(NUM_ELFS),0)
+	$(error No executable .elf file exists in the current directory)
+else
+ifeq ($(NUM_ELFS),1)
+	openocd  -f interface/cmsis-dap.cfg -f target/kl25.cfg -c "init" \
+		-c "program $(wildcard *.elf)" -c "reset" -c "exit"
+else
+	$(error There is more than one executable .elf file in the current \
+		directory)  
+endif
+endif
 
-erase:
+erase: board_plugged_in
 	openocd  -f interface/cmsis-dap.cfg -f target/kl25.cfg -c "init" -c "kinetis mdm mass_erase" -c "exit"
 
 clean:
