@@ -12,7 +12,8 @@ SYS_CLOCK = 48000000L
 
 LINKSCRIPT=baremetal/mkl25z4.ld 
 
-OPTS = -Os "-DSYS_CLOCK=$(SYS_CLOCK)" -DWATCHDOG_DISABLE -DRESET_PIN_DISABLE
+OPTS = -Og "-DSYS_CLOCK=$(SYS_CLOCK)" -DWATCHDOG_DISABLE
+DEBUG_OPTS = -g3
 TARGET = cortex-m0plus
 CFLAGS = -ffreestanding -nodefaultlibs -nostartfiles \
 	 -ffunction-sections -fdata-sections -Wall \
@@ -21,7 +22,7 @@ CFLAGS = -ffreestanding -nodefaultlibs -nostartfiles \
 CFLAGSS = -ffreestanding -nodefaultlibs -nostartfiles \
 	 -ffunction-sections -fdata-sections -Wall \
 	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
-	 $(OPTS) $(INCLUDES)
+	 $(DEBUG_OPTS) $(OPTS) $(INCLUDES)
 NUM_ELFS := $(shell  ls -dq *.elf 2>/dev/null | wc -l)
 
 .PHONY:	clean usage board_plugged_in program
