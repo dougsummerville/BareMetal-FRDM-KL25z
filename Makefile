@@ -12,7 +12,8 @@ SYS_CLOCK = 48000000L
 
 LINKSCRIPT=baremetal/mkl25z4.ld 
 
-OPTS = -Og "-DSYS_CLOCK=$(SYS_CLOCK)" -DWATCHDOG_DISABLE
+OPT_LEVEL = -Og
+OPTS = $(OPT_LEVEL) "-DSYS_CLOCK=$(SYS_CLOCK)" $(USER_MACRO)
 DEBUG_OPTS = -g3
 TARGET = cortex-m0plus
 CFLAGS = -ffreestanding -nodefaultlibs -nostartfiles \
