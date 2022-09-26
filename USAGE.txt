@@ -1,6 +1,6 @@
 #########################################################################
 To build an application:
-	make LIBS="driver1.o driver2.o" USER_MACRO="-DWATCHDOG_DISABLE" app_name.elf
+	make LIBS="driver1.o driver2.o" OPT_LEVEL="-Os -flto" USER_MACRO="-DWATCHDOG_DISABLE" app_name.elf
 
 Other make targets:
 

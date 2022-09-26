@@ -13,12 +13,13 @@ SYS_CLOCK = 48000000L
 LINKSCRIPT=baremetal/mkl25z4.ld 
 
 OPT_LEVEL = -Og
+#OPT_LEVEL = -Os -flto
 OPTS = $(OPT_LEVEL) "-DSYS_CLOCK=$(SYS_CLOCK)" $(USER_MACRO)
 DEBUG_OPTS = -g3
 TARGET = cortex-m0plus
 CFLAGS = -ffreestanding -nodefaultlibs -nostartfiles \
 	 -ffunction-sections -fdata-sections -Wall \
-	 -flto -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
+	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
 	 $(DEBUG_OPTS) $(OPTS) $(INCLUDES)
 CFLAGSS = -ffreestanding -nodefaultlibs -nostartfiles \
 	 -ffunction-sections -fdata-sections -Wall \
